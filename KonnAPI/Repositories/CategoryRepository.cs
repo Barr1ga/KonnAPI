@@ -12,10 +12,10 @@ public class CategoryRepository {
     }
 
     public async Task<IEnumerable<Category>> GetAllCategories(int id) {
-        return await _context.Categories.OrderBy(c => c.CreatedAt).ToListAsync();
+        return await _context.Categories.OrderByDescending(c => c.CreatedAt).ToListAsync();
     }
 
     public async Task<IEnumerable<Category>> GetWorkspaceCategories(int id) {
-        return await _context.Categories.Where(c => c.WorkspaceId == id).OrderBy(c => c.CreatedAt).ToListAsync();
+        return await _context.Categories.Where(c => c.WorkspaceId == id).OrderByDescending(c => c.CreatedAt).ToListAsync();
     }
 }

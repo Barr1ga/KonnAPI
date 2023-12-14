@@ -14,6 +14,16 @@ public class AddressController : Controller {
     }
 
     [HttpGet]
+    public async Task<ActionResult<IEnumerable<Address>>> GetAllAddresses() {
+        var addresses = await _addressRepository.GetAllAddresses();
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(new { data = addresses.OrderByDescending(a => a.CreatedAt).ToList() });
+    }
+
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<Address>>> GetContactAddresses(int id) {
         var addresses = await _addressRepository.GetContactAddresses(id);
 
