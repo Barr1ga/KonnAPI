@@ -1,4 +1,6 @@
-﻿using KonnAPI.Interfaces;
+﻿using AutoMapper;
+using KonnAPI.Dto;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,19 +11,32 @@ namespace KonnAPI.Controllers;
 [ApiController]
 public class ContactController : Controller {
     private readonly IContactRepository _contactRepository;
+    private readonly IMapper _mapper;
 
-    public ContactController(IContactRepository contactRepository) {
+    public ContactController(IContactRepository contactRepository, IMapper mapper) {
         _contactRepository = contactRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Contact>>> GetAllContacts() {
-        var contacts = await _contactRepository.GetAllContacts();
+    public async Task<IActionResult> GetAllContacts() {
+        try {
+            var contacts = await _contactRepository.GetAllContacts();
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (contacts == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = contacts.OrderByDescending(a => a.CreatedAt).ToList() });
+            var contactDtos = _mapper.Map<List<ContactDto>>(contacts);
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = contactDtos.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
