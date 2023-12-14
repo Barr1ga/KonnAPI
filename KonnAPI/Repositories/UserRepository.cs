@@ -1,10 +1,11 @@
 ﻿using KonnAPI.Data;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace KonnAPI.Repositories;
 
-public class UserRepository {
+public class UserRepository : IUserRepository {
     private readonly DataContext _context;
 
     public UserRepository(DataContext context) {
