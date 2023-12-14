@@ -14,6 +14,16 @@ public class CategoryController : Controller {
     }
 
     [HttpGet]
+    public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories(int id) {
+        var categories = await _categoryRepository.GetWorkspaceCategories(id);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        return Ok(new { data = categories.OrderByDescending(c => c.CreatedAt).ToList() });
+    }
+
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetWorkspaceCategories(int id) {
         var categories = await _categoryRepository.GetWorkspaceCategories(id);
 
