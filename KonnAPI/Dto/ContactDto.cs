@@ -1,6 +1,6 @@
-﻿namespace KonnAPI.Models;
+﻿namespace KonnAPI.Dto;
 
-public class Contact {
+public class ContactDto {
     public int Id { get; set; }
     public int WorkspaceId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -18,8 +18,4 @@ public class Contact {
     public Boolean IsDeleted { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    public virtual ICollection<Address> Addresses { get; set; }
-    public virtual ICollection<Social> Socials { get; set; }
-    public virtual ICollection<ContactCategory> ContactCategories { get; set; }
-    public virtual Workspace Workspace { get; set; }
 }

@@ -48,8 +48,20 @@ public class DataContext : DbContext {
           .HasForeignKey(cc => cc.CategoryId)
           .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<User>()
+          .HasMany(w => w.Workspaces)
+          .WithOne(a => a.User)
+          .HasForeignKey(a => a.UserId)
+          .OnDelete(DeleteBehavior.Cascade);
+
         modelBuilder.Entity<Workspace>()
           .HasMany(w => w.Categories)
+          .WithOne(a => a.Workspace)
+          .HasForeignKey(a => a.WorkspaceId)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Workspace>()
+          .HasMany(w => w.Contacts)
           .WithOne(a => a.Workspace)
           .HasForeignKey(a => a.WorkspaceId)
           .OnDelete(DeleteBehavior.Cascade);
