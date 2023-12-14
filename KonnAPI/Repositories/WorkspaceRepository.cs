@@ -17,6 +17,6 @@ public class WorkspaceRepository : IWorkspaceRepository {
     }
 
     public async Task<IEnumerable<Workspace>> GetUserWorkspaces(int id) {
-        return await _context.Workspaces.Where(w => w.Use).OrderByDescending(w => w.CreatedAt).ToListAsync();
+        return await _context.Workspaces.Where(w => w.UserId).OrderByDescending(w => w.CreatedAt).ToListAsync();
     }
 }
