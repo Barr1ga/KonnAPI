@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KonnAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/addresses/[controller]")]
 [ApiController]
 public class AddressController : Controller {
     private readonly IAddressRepository _addressRepository;
@@ -23,7 +23,7 @@ public class AddressController : Controller {
         return Ok(new { data = addresses.OrderByDescending(a => a.CreatedAt).ToList() });
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Address>>> GetContactAddresses(int id) {
         var addresses = await _addressRepository.GetContactAddresses(id);
 

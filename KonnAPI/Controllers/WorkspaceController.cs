@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KonnAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/workspaces/[controller]")]
 [ApiController]
 public class WorkspaceController : Controller {
 
@@ -24,7 +24,7 @@ public class WorkspaceController : Controller {
         return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Workspace>>> GetUserWorkspaces(int id) {
         var workspaces = await _workspaceRepository.GetUserWorkspaces(id);
 

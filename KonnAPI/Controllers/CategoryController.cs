@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KonnAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/category/[controller]")]
 [ApiController]
 public class CategoryController : Controller {
     private readonly ICategoryRepository _categoryRepository;
@@ -23,7 +23,7 @@ public class CategoryController : Controller {
         return Ok(new { data = categories.OrderByDescending(c => c.CreatedAt).ToList() });
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Category>>> GetWorkspaceCategories(int id) {
         var categories = await _categoryRepository.GetWorkspaceCategories(id);
 

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace KonnAPI.Controllers;
 
 
-[Route("api/[controller]")]
+[Route("api/contacts/[controller]")]
 [ApiController]
 public class ContactController : Controller {
     private readonly IContactRepository _contactRepository;
@@ -24,7 +24,7 @@ public class ContactController : Controller {
         return Ok(new { data = contacts.OrderByDescending(a => a.CreatedAt).ToList() });
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Contact>>> GetWorkspaceContacts(int id) {
         var contacts = await _contactRepository.GetWorkspaceContacts(id);
 

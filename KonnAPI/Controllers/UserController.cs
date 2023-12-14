@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KonnAPI.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/users/[controller]")]
 [ApiController]
 public class UserController : Controller {
     private readonly IUserRepository _userRepository;
