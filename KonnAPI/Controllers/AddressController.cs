@@ -1,4 +1,6 @@
-﻿using KonnAPI.Interfaces;
+﻿using AutoMapper;
+using KonnAPI.Dto;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,28 +10,52 @@ namespace KonnAPI.Controllers;
 [ApiController]
 public class AddressController : Controller {
     private readonly IAddressRepository _addressRepository;
+    private readonly IMapper _mapper;
 
-    public AddressController(IAddressRepository addressRepository) {
+    public AddressController(IAddressRepository addressRepository, IMapper mapper) {
         _addressRepository = addressRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Address>>> GetAllAddresses() {
-        var addresses = await _addressRepository.GetAllAddresses();
+        try {
+            var addresses = await _addressRepository.GetAllAddresses();
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (addresses == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = addresses.OrderByDescending(a => a.CreatedAt).ToList() });
+            var addressDtos = _mapper.Map<List<ContactDto>>(addresses);
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = addressDtos.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Address>>> GetContactAddresses(int id) {
-        var addresses = await _addressRepository.GetContactAddresses(id);
+        try {
+            var addresses = await _addressRepository.GetContactAddresses(id);
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (addresses == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = addresses.OrderByDescending(a => a.CreatedAt).ToList() });
+            var addressDtos = _mapper.Map<List<ContactDto>>(addresses);
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = addressDtos.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using KonnAPI.Interfaces;
+﻿using AutoMapper;
+using KonnAPI.Dto;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +11,11 @@ namespace KonnAPI.Controllers;
 public class WorkspaceController : Controller {
 
     private readonly IWorkspaceRepository _workspaceRepository;
+    private readonly IMapper _mapper;
 
-    public WorkspaceController(IWorkspaceRepository workspaceRepository) {
+    public WorkspaceController(IWorkspaceRepository workspaceRepository, IMapper mapper) {
         _workspaceRepository = workspaceRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -23,11 +27,13 @@ public class WorkspaceController : Controller {
                 return NoContent();
             }
 
+            var workspaceDtos = _mapper.Map<List<WorkspaceDto>>(workspaces);
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+            return Ok(new { data = workspaceDtos.OrderByDescending(a => a.CreatedAt).ToList() });
         } catch (Exception ex) {
             return StatusCode(500, new { message = ex.Message });
         }
@@ -43,11 +49,13 @@ public class WorkspaceController : Controller {
                 return NoContent();
             }
 
+            var workspaceDtos = _mapper.Map<List<WorkspaceDto>>(workspaces);
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+            return Ok(new { data = workspaceDtos.OrderByDescending(a => a.CreatedAt).ToList() });
         } catch (Exception ex) {
             return StatusCode(500, new { message = ex.Message });
         }

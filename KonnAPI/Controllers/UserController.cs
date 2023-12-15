@@ -1,4 +1,6 @@
-﻿using KonnAPI.Interfaces;
+﻿using AutoMapper;
+using KonnAPI.Dto;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +10,11 @@ namespace KonnAPI.Controllers;
 [ApiController]
 public class UserController : Controller {
     private readonly IUserRepository _userRepository;
+    private readonly IMapper _mapper;
 
-    public UserController(IUserRepository userRepository) {
+    public UserController(IUserRepository userRepository, IMapper mapper) {
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -22,11 +26,13 @@ public class UserController : Controller {
                 return NoContent();
             }
 
+            var userDtos = _mapper.Map<List<UserDto>>(users);
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            return Ok(new { data = users.OrderByDescending(a => a.CreatedAt).ToList() });
+            return Ok(new { data = userDtos.OrderByDescending(a => a.CreatedAt).ToList() });
         } catch (Exception ex) {
             return StatusCode(500, new { message = ex.Message });
         }

@@ -6,6 +6,11 @@ namespace KonnAPI.Helpers;
 
 public class MappingProfiles : Profile {
     public MappingProfiles() {
+        CreateMap<Address, AddressDto>();
+        CreateMap<Category, CategoryDto>();
         CreateMap<Contact, ContactDto>();
+        CreateMap<Social, SocialDto>();
+        CreateMap<User, UserDto>();
+        CreateMap<Workspace, WorkspaceDto>();
     }
 }

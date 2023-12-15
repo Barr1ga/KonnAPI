@@ -1,4 +1,6 @@
-﻿using KonnAPI.Interfaces;
+﻿using AutoMapper;
+using KonnAPI.Dto;
+using KonnAPI.Interfaces;
 using KonnAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +10,11 @@ namespace KonnAPI.Controllers;
 [ApiController]
 public class CategoryController : Controller {
     private readonly ICategoryRepository _categoryRepository;
+    private readonly IMapper _mapper;
 
-    public CategoryController(ICategoryRepository categoryRepository) {
+    public CategoryController(ICategoryRepository categoryRepository, IMapper mapper) {
         _categoryRepository = categoryRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -22,11 +26,13 @@ public class CategoryController : Controller {
                 return NoContent();
             }
 
+            var contactDtos = _mapper.Map<List<CategoryDto>>(categories);
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            return Ok(new { data = categories.OrderByDescending(a => a.CreatedAt).ToList() });
+            return Ok(new { data = contactDtos.OrderByDescending(a => a.CreatedAt).ToList() });
         } catch (Exception ex) {
             return StatusCode(500, new { message = ex.Message });
         }
@@ -41,11 +47,13 @@ public class CategoryController : Controller {
                 return NoContent();
             }
 
+            var contactDtos = _mapper.Map<List<CategoryDto>>(categories);
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            return Ok(new { data = categories.OrderByDescending(a => a.CreatedAt).ToList() });
+            return Ok(new { data = contactDtos.OrderByDescending(a => a.CreatedAt).ToList() });
         } catch (Exception ex) {
             return StatusCode(500, new { message = ex.Message });
         }
