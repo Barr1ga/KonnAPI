@@ -14,12 +14,21 @@ public class UserController : Controller {
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Address>>> GetAllAddresses() {
-        var addresses = await _userRepository.GetAllUsers();
+    public async Task<ActionResult<IEnumerable<User>>> GetAllUsers() {
+        try {
+            var users = await _userRepository.GetAllUsers();
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (users == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = addresses.OrderByDescending(a => a.CreatedAt).ToList() });
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = users.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 }

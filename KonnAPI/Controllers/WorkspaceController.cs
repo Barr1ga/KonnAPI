@@ -16,21 +16,40 @@ public class WorkspaceController : Controller {
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Workspace>>> GetAllWorkspaces() {
-        var workspaces = await _workspaceRepository.GetAllWorkspaces();
+        try {
+            var workspaces = await _workspaceRepository.GetAllWorkspaces();
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (workspaces == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Workspace>>> GetUserWorkspaces(int id) {
-        var workspaces = await _workspaceRepository.GetUserWorkspaces(id);
+        try {
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            var workspaces = await _workspaceRepository.GetUserWorkspaces(id);
 
-        return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+            if (workspaces == null) {
+                return NoContent();
+            }
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = workspaces.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 }

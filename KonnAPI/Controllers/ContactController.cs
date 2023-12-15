@@ -41,11 +41,22 @@ public class ContactController : Controller {
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Contact>>> GetWorkspaceContacts(int id) {
-        var contacts = await _contactRepository.GetWorkspaceContacts(id);
+        try {
+            var contacts = await _contactRepository.GetWorkspaceContacts(id);
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (contacts == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = contacts.OrderByDescending(a => a.CreatedAt).ToList() });
+            var contactDtos = _mapper.Map<List<ContactDto>>(contacts);
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = contactDtos.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 }

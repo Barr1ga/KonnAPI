@@ -15,21 +15,39 @@ public class CategoryController : Controller {
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories(int id) {
-        var categories = await _categoryRepository.GetWorkspaceCategories(id);
+        try {
+            var categories = await _categoryRepository.GetWorkspaceCategories(id);
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (categories == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = categories.OrderByDescending(c => c.CreatedAt).ToList() });
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = categories.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<IEnumerable<Category>>> GetWorkspaceCategories(int id) {
-        var categories = await _categoryRepository.GetWorkspaceCategories(id);
+        try {
+            var categories = await _categoryRepository.GetWorkspaceCategories(id);
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+            if (categories == null) {
+                return NoContent();
+            }
 
-        return Ok(new { data = categories.OrderByDescending(c => c.CreatedAt).ToList() });
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(new { data = categories.OrderByDescending(a => a.CreatedAt).ToList() });
+        } catch (Exception ex) {
+            return StatusCode(500, new { message = ex.Message });
+        }
     }
 }
