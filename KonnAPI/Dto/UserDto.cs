@@ -9,3 +9,10 @@ public class UserDto
     public DateTime UpdatedAt { get; set; }
     public bool IsDeleted { get; set; } = false;
 }
+
+public class UserCreateDto
+{
+    public string Email { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+}
+

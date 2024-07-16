@@ -40,21 +40,19 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<User> AddUser(User user)
+    public async Task<bool> AddUser(User user)
     {
         user.CreatedAt = DateTime.Now;
         user.UpdatedAt = DateTime.Now;
         await _context.Users.AddAsync(user);
-        await SaveChangesAsync();
-        return user;
+        return await SaveChangesAsync();
     }
 
     public async Task<bool> UpdateUser(int userId, User user)
     {
         user.UpdatedAt = DateTime.Now;
         _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-        return true;
+        return await SaveChangesAsync();
     }
 
     public async Task<bool> DeleteUser(int userId)
