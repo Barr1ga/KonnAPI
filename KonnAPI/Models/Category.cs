@@ -1,6 +1,7 @@
 ﻿namespace KonnAPI.Models;
 
-public class Category {
+public class Category
+{
     public int Id { get; set; }
     public int WorkspaceId { get; set; }
     public string Name { get; set; }
