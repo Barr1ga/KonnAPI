@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KonnAPI.Constants;
+using KonnAPI.Data;
 using KonnAPI.Dto;
 using KonnAPI.Interfaces;
 using KonnAPI.Models;
@@ -12,6 +13,7 @@ namespace KonnAPI.Controllers;
 [ApiController]
 public class ContactController : Controller
 {
+    private readonly DataContext _context;
     private readonly IContactRepository _contactRepository;
     private readonly IAddressRepository _addressRepository;
     private readonly IContactCategoryRepository _contactCategoryRepository;
@@ -92,48 +94,63 @@ public class ContactController : Controller
             return BadRequest(new MessageDto(Status.Error, "Validation failed"));
         }
 
-        var newContact = _mapper.Map<Contact>(contact);
-
-        var existingContact = await _contactRepository.GetContact(name: newContact.Name, email: newContact.Email);
-        if (existingContact != null) return BadRequest(new MessageDto(Status.Error, "Contact with this name and email already exists"));
-
-        try
+        using (var transaction = await _context.Database.BeginTransactionAsync())
         {
-            if (!await _contactRepository.AddContact(workspaceId, newContact))
+            try
             {
+                var newContact = _mapper.Map<Contact>(contact);
+
+                var existingContact = await _contactRepository.GetContact(name: newContact.Name, email: newContact.Email);
+
+                if (existingContact != null) return BadRequest(new MessageDto(Status.Error, "Contact with this name and email already exists"));
+
+                if (!await _contactRepository.AddContact(workspaceId, newContact))
+                {
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact"));
+                }
+
+                if (contact.CategoryIds != null)
+                {
+                    List<ContactCategory> contactCategories = new List<ContactCategory>();
+                    contact.CategoryIds.ForEach(async c =>
+                    {
+                        contactCategories.Add(_mapper.Map<ContactCategory>(c));
+                    });
+
+                    if (!await _contactCategoryRepository.AddContactCategories(contactCategories))
+                    {
+                        await transaction.RollbackAsync();
+                        return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact categories"));
+                    }
+                }
+
+                if (contact.Addresses != null)
+                {
+                    List<Address> addresses = new List<Address>();
+                    contact.Addresses.ForEach(async a =>
+                    {
+                        addresses.Add(_mapper.Map<Address>(a));
+                    });
+
+                    if (!await _addressRepository.AddAddresses(addresses))
+                    {
+                        await transaction.RollbackAsync();
+                        return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact addresses"));
+                    }
+                }
+
+                await transaction.CommitAsync();
+                return Created(
+                    "contacts",
+                    new MessageDto(Status.Success, "Successfully added contact")
+                );
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
                 return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact"));
             }
-
-            if (contact.CategoryIds != null)
-            {
-                List<ContactCategory> contactCategories = new List<ContactCategory>();
-                contact.CategoryIds.ForEach(async c =>
-                {
-                    contactCategories.Add(_mapper.Map<ContactCategory>(c));
-                });
-
-                await _contactCategoryRepository.AddContactCategories(contactCategories);
-            }
-
-            if (contact.Addresses != null)
-            {
-                List<Address> addresses = new List<Address>();
-                contact.Addresses.ForEach(async a =>
-                {
-                    addresses.Add(_mapper.Map<Address>(a));
-                });
-
-                await _addressRepository.AddAddresses(addresses);
-            }
-
-            return Created(
-                "contacts",
-                new MessageDto(Status.Success, "Successfully added contact")
-            );
-        }
-        catch (Exception)
-        {
-            return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact"));
         }
     }
     #endregion

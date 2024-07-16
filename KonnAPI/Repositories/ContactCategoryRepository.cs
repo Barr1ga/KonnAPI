@@ -19,6 +19,11 @@ public class ContactCategoryRepository : IContactCategoryRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
+    public async Task<ContactCategory?> GetContactCategory(int contactId, int categoryId)
+    {
+        return await _context.ContactCategories.FirstOrDefaultAsync(c => c.ContactId == contactId && c.CategoryId == categoryId);
+    }
+
     public async Task<bool> AddContactCategory(ContactCategory contactCategory)
     {
         await _context.ContactCategories.AddAsync(contactCategory);
