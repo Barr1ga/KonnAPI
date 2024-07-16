@@ -4,12 +4,12 @@ namespace KonnAPI.Interfaces;
 
 public interface IUserRepository
 {
+    Task<bool> SaveChangesAsync();
     Task<IEnumerable<User>?> GetAllUsers();
     Task<User?> GetUser(int? userId = null, string? email = null);
-    Task<bool> SaveChangesAsync();
     Task<User> AddUser(User user);
     Task<bool> UpdateUser(int userId, User user);
-    Task<bool> DeleteUser(int id);
-    Task<bool> RestoreUser(int id);
-    Task<bool> HardDeleteUser(int id);
+    Task<bool> DeleteUser(int userId);
+    Task<bool> RestoreUser(int userId);
+    Task<bool> HardDeleteUser(int userId);
 }

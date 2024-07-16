@@ -50,11 +50,10 @@ public class WorkspaceRepository : IWorkspaceRepository
     public async Task<bool> DeleteWorkspace(int workspaceId)
     {
         var workspace = await _context.Workspaces.FirstOrDefaultAsync(w => w.Id == workspaceId);
-        if (workspace == null)
+        if (workspace == null || workspace.IsDeleted)
         {
             return false;
         }
-
         workspace.IsDeleted = true;
         workspace.UpdatedAt = DateTime.Now;
         return await SaveChangesAsync();
@@ -63,11 +62,10 @@ public class WorkspaceRepository : IWorkspaceRepository
     public async Task<bool> RestoreWorkspace(int workspaceId)
     {
         var workspace = await _context.Workspaces.FirstOrDefaultAsync(w => w.Id == workspaceId);
-        if (workspace == null)
+        if (workspace == null || !workspace.IsDeleted)
         {
             return false;
         }
-
         workspace.IsDeleted = false;
         workspace.UpdatedAt = DateTime.Now;
         return await SaveChangesAsync();
@@ -80,7 +78,6 @@ public class WorkspaceRepository : IWorkspaceRepository
         {
             return false;
         }
-
         _context.Workspaces.Remove(workspace);
         return await SaveChangesAsync();
     }

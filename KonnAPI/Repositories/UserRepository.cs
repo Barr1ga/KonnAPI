@@ -57,10 +57,10 @@ public class UserRepository : IUserRepository
         return true;
     }
 
-    public async Task<bool> DeleteUser(int id)
+    public async Task<bool> DeleteUser(int userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-        if (user == null)
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null || user.IsDeleted)
         {
             return false;
         }
@@ -69,10 +69,10 @@ public class UserRepository : IUserRepository
         return await SaveChangesAsync();
     }
 
-    public async Task<bool> RestoreUser(int id)
+    public async Task<bool> RestoreUser(int userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-        if (user == null)
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        if (user == null || !user.IsDeleted)
         {
             return false;
         }
@@ -81,9 +81,9 @@ public class UserRepository : IUserRepository
         return await SaveChangesAsync();
     }
 
-    public async Task<bool> HardDeleteUser(int id)
+    public async Task<bool> HardDeleteUser(int userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         if (user == null || !user.IsDeleted)
         {
             return false;

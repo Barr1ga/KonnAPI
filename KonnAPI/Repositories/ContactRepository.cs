@@ -48,7 +48,7 @@ public class ContactRepository : IContactRepository
     public async Task<bool> DeleteContact(int contactId)
     {
         var contact = await _context.Contacts.FirstOrDefaultAsync(a => a.Id == contactId);
-        if (contact == null)
+        if (contact == null || contact.IsDeleted)
         {
             return false;
         }
@@ -61,11 +61,10 @@ public class ContactRepository : IContactRepository
     public async Task<bool> RestoreContact(int contactId)
     {
         var contact = await _context.Contacts.FirstOrDefaultAsync(a => a.Id == contactId);
-        if (contact == null)
+        if (contact == null || !contact.IsDeleted)
         {
             return false;
         }
-
         contact.IsDeleted = false;
         contact.UpdatedAt = DateTime.Now;
         return await SaveChangesAsync();
@@ -78,7 +77,6 @@ public class ContactRepository : IContactRepository
         {
             return false;
         }
-
         _context.Contacts.Remove(contact);
         return await SaveChangesAsync();
     }

@@ -4,6 +4,7 @@ namespace KonnAPI.Interfaces;
 
 public interface IContactRepository
 {
+    Task<bool> SaveChangesAsync();
     Task<IEnumerable<Contact>> GetAllContacts();
     Task<IEnumerable<Contact>> GetWorkspaceContacts(int id);
     Task<bool> AddContact(int workspaceId, Contact contact);
