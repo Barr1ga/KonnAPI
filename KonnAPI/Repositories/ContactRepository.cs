@@ -21,12 +21,28 @@ public class ContactRepository : IContactRepository
 
     public async Task<IEnumerable<Contact>> GetAllContacts()
     {
-        return await _context.Contacts.OrderByDescending(a => a.CreatedAt).ToListAsync();
+        return await _context.Contacts.OrderByDescending(c => c.CreatedAt).ToListAsync();
     }
 
-    public async Task<IEnumerable<Contact>> GetWorkspaceContacts(int id)
+    public async Task<IEnumerable<Contact>> GetWorkspaceContacts(int workspaceId)
     {
-        return await _context.Contacts.Where(a => a.WorkspaceId == id).OrderByDescending(a => a.Id).ToListAsync();
+        return await _context.Contacts.Where(c => c.WorkspaceId == workspaceId).OrderByDescending(c => c.Id).ToListAsync();
+    }
+
+    public async Task<User?> GetContact(int? contactId = null, string? name = null, string? email = null)
+    {
+        if (contactId.HasValue)
+        {
+            return await _context.Users.FirstOrDefaultAsync(c => c.Id == contactId);
+        }
+        else if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(email))
+        {
+            return await _context.Users.FirstOrDefaultAsync(c => c.Name == name && c.Email == email);
+        }
+        else
+        {
+            throw new ArgumentException("At least one parameter must be provided.");
+        }
     }
 
     public async Task<bool> AddContact(int workspaceId, Contact contact)
@@ -47,7 +63,7 @@ public class ContactRepository : IContactRepository
 
     public async Task<bool> DeleteContact(int contactId)
     {
-        var contact = await _context.Contacts.FirstOrDefaultAsync(a => a.Id == contactId);
+        var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
         if (contact == null || contact.IsDeleted)
         {
             return false;
@@ -60,7 +76,7 @@ public class ContactRepository : IContactRepository
 
     public async Task<bool> RestoreContact(int contactId)
     {
-        var contact = await _context.Contacts.FirstOrDefaultAsync(a => a.Id == contactId);
+        var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
         if (contact == null || !contact.IsDeleted)
         {
             return false;
@@ -72,7 +88,7 @@ public class ContactRepository : IContactRepository
 
     public async Task<bool> HardDeleteContact(int contactId)
     {
-        var contact = await _context.Contacts.FirstOrDefaultAsync(a => a.Id == contactId);
+        var contact = await _context.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
         if (contact == null || !contact.IsDeleted)
         {
             return false;

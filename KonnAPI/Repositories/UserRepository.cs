@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
     {
         if (userId.HasValue)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId.Value);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
         else if (!string.IsNullOrEmpty(email))
         {

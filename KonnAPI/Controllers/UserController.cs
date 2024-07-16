@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KonnAPI.Constants;
 using KonnAPI.Dto;
 using KonnAPI.Interfaces;
 using KonnAPI.Models;
@@ -48,38 +49,41 @@ public class UserController : Controller
         }
     }
 
+    #region GetUser
     [HttpPost]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<User>> AddUser([FromBody] UserCreateDto user)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new MessageDto(Status.Error, "Validation failed"));
+        }
+
+        var newUser = _mapper.Map<User>(user);
+
+        var existingUser = await _userRepository.GetUser(email: newUser.Email);
+        if (existingUser != null) return BadRequest(new MessageDto(Status.Error, "User with this email already exists"));
+
         try
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new MessageDto("fail", "Validation failed"));
-            }
-
-            var newUser = _mapper.Map<User>(user);
-
-            var existingUser = await _userRepository.GetUser(email: newUser.Email);
-            if (existingUser != null) return BadRequest(new MessageDto("fail", "User with this email already exists"));
-
             if (!await _userRepository.AddUser(newUser))
             {
-                ModelState.AddModelError("", "Something went wrong while adding the user");
-                return StatusCode(500, ModelState);
+                return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the user"));
             }
 
             return Created(
                 "users",
-                new MessageDto("success", "Successfully added user")
+                new MessageDto(Status.Success, "Successfully added user")
             );
-
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, new { message = ex.Message });
+            return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the user"));
         }
     }
+    #endregion
 
     // TODO: Implement other CRUD operations
 }

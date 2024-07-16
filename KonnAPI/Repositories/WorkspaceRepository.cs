@@ -32,6 +32,22 @@ public class WorkspaceRepository : IWorkspaceRepository
         return await _context.Workspaces.Where(w => w.UserId == userId).OrderByDescending(w => w.CreatedAt).ToListAsync();
     }
 
+    public async Task<Workspace?> GetUserWorkspace(int userId, int? workspaceId = null, string? workspaceName = null)
+    {
+        if (workspaceId.HasValue)
+        {
+            return await _context.Workspaces.FirstOrDefaultAsync(u => u.UserId == userId && u.Id == workspaceId);
+        }
+        else if (!string.IsNullOrEmpty(workspaceName))
+        {
+            return await _context.Workspaces.FirstOrDefaultAsync(u => u.UserId == userId && u.Name == workspaceName);
+        }
+        else
+        {
+            throw new ArgumentException("At least one parameter must be provided.");
+        }
+    }
+
     public async Task<bool> AddWorkspace(Workspace workspace)
     {
         workspace.CreatedAt = DateTime.Now;
