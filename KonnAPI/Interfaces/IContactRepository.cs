@@ -7,7 +7,7 @@ public interface IContactRepository
     Task<bool> SaveChangesAsync();
     Task<IEnumerable<Contact>> GetAllContacts();
     Task<IEnumerable<Contact>> GetWorkspaceContacts(int workspaceId);
-    Task<User?> GetContact(int? contactId = null, string? name = null, string? email = null);
+    Task<Contact?> GetContact(int? contactId = null, string? name = null, string? email = null);
     Task<bool> AddContact(int workspaceId, Contact contact);
     Task<bool> UpdateContact(int contactId, Contact contact);
     Task<bool> DeleteContact(int contactId);

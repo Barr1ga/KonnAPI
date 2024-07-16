@@ -10,3 +10,10 @@ public class CategoryDto
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
+
+public class CategoryCreateDto
+{
+    public int WorkspaceId { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+}

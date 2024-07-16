@@ -29,15 +29,15 @@ public class ContactRepository : IContactRepository
         return await _context.Contacts.Where(c => c.WorkspaceId == workspaceId).OrderByDescending(c => c.Id).ToListAsync();
     }
 
-    public async Task<User?> GetContact(int? contactId = null, string? name = null, string? email = null)
+    public async Task<Contact?> GetContact(int? contactId = null, string? name = null, string? email = null)
     {
         if (contactId.HasValue)
         {
-            return await _context.Users.FirstOrDefaultAsync(c => c.Id == contactId);
+            return await _context.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
         }
         else if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(email))
         {
-            return await _context.Users.FirstOrDefaultAsync(c => c.Name == name && c.Email == email);
+            return await _context.Contacts.FirstOrDefaultAsync(c => c.Name == name && c.Email == email);
         }
         else
         {

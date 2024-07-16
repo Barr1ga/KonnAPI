@@ -7,6 +7,7 @@ public interface ICategoryRepository
     Task<bool> SaveChangesAsync();
     Task<IEnumerable<Category>> GetAllCategories();
     Task<IEnumerable<Category>> GetWorkspaceCategories(int id);
+    Task<Category?> GetCategory(int? categoryId = null, string? name = null);
     Task<bool> AddCategory(int workspaceId, Category category);
     Task<bool> UpdateCategory(int categoryId, Category category);
     Task<bool> DeleteCategory(int categoryId);

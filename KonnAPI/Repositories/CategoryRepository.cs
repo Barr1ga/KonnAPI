@@ -29,6 +29,22 @@ public class CategoryRepository : ICategoryRepository
         return await _context.Categories.Where(c => c.WorkspaceId == id).OrderByDescending(c => c.CreatedAt).ToListAsync();
     }
 
+    public async Task<Category?> GetCategory(int? categoryId = null, string? name = null)
+    {
+        if (categoryId.HasValue)
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+        }
+        else if (!string.IsNullOrEmpty(name))
+        {
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Name == name);
+        }
+        else
+        {
+            throw new ArgumentException("At least one parameter must be provided.");
+        }
+    }
+
     public async Task<bool> AddCategory(int workspaceId, Category category)
     {
         category.WorkspaceId = workspaceId;

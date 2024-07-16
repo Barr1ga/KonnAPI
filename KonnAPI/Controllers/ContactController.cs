@@ -81,7 +81,7 @@ public class ContactController : Controller
     [ProducesResponseType(typeof(MessageDto), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(MessageDto), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(MessageDto), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<Workspace>> AddWorkspaceContact([FromRoute] int workspaceId, [FromBody] int userId, [FromBody] ContactCreateDto contact)
+    public async Task<ActionResult<Workspace>> AddWorkspaceContact([FromRoute] int workspaceId, [FromBody] ContactCreateDto contact)
     {
         if (!ModelState.IsValid)
         {
