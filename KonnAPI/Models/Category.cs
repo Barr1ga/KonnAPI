@@ -18,7 +18,7 @@ public class Category
     public string Description { get; set; } = string.Empty;
 
     [Required]
-    public Boolean IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
 
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.Now;

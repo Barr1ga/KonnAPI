@@ -14,7 +14,7 @@ public class Address
     public string Location { get; set; } = string.Empty;
 
     [Required]
-    public Boolean IsDefault { get; set; } = false;
+    public bool IsDefault { get; set; } = false;
 
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.Now;

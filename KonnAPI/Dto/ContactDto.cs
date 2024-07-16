@@ -1,6 +1,7 @@
 ﻿namespace KonnAPI.Dto;
 
-public class ContactDto {
+public class ContactDto
+{
     public int Id { get; set; }
     public int WorkspaceId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -11,11 +12,11 @@ public class ContactDto {
     public string Telephone { get; set; }
     public string Image { get; set; }
     public string Notes { get; set; }
-    public Boolean IsFavorite { get; set; }
-    public Boolean IsBlocked { get; set; }
-    public Boolean IsEmergency { get; set; }
-    public Boolean IsTrashed { get; set; }
-    public Boolean IsDeleted { get; set; }
+    public bool IsFavorite { get; set; }
+    public bool IsBlocked { get; set; }
+    public bool IsEmergency { get; set; }
+    public bool IsTrashed { get; set; }
+    public bool IsDeleted { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

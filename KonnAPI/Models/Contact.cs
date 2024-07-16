@@ -29,13 +29,13 @@ public class Contact
 
     public string Notes { get; set; } = string.Empty;
 
-    public Boolean IsFavorite { get; set; } = false;
+    public bool IsFavorite { get; set; } = false;
 
-    public Boolean IsBlocked { get; set; } = false;
+    public bool IsBlocked { get; set; } = false;
 
-    public Boolean IsEmergency { get; set; } = false;
+    public bool IsEmergency { get; set; } = false;
 
-    public Boolean IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; } = false;
 
     [Required]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
