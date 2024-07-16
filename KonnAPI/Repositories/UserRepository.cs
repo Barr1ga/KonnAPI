@@ -14,6 +14,11 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+
     public async Task<IEnumerable<User>?> GetAllUsers()
     {
         return await _context.Users.OrderByDescending(u => u.CreatedAt).ToListAsync();
@@ -33,11 +38,6 @@ public class UserRepository : IUserRepository
         {
             throw new ArgumentException("At least one parameter must be provided.");
         }
-    }
-
-    public async Task<bool> SaveChangesAsync()
-    {
-        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<User> AddUser(User user)
@@ -84,7 +84,7 @@ public class UserRepository : IUserRepository
     public async Task<bool> HardDeleteUser(int id)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
-        if (user == null || user.IsDeleted == false)
+        if (user == null || !user.IsDeleted)
         {
             return false;
         }

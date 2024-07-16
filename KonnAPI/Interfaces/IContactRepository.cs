@@ -2,7 +2,13 @@
 
 namespace KonnAPI.Interfaces;
 
-public interface IContactRepository {
+public interface IContactRepository
+{
     Task<IEnumerable<Contact>> GetAllContacts();
     Task<IEnumerable<Contact>> GetWorkspaceContacts(int id);
+    Task<bool> AddContact(int workspaceId, Contact contact);
+    Task<bool> UpdateContact(int contactId, Contact contact);
+    Task<bool> DeleteContact(int contactId);
+    Task<bool> RestoreContact(int contactId);
+    Task<bool> HardDeleteContact(int contactId);
 }

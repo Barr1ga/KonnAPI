@@ -17,6 +17,11 @@ public class WorkspaceRepository : IWorkspaceRepository
         _context = context;
     }
 
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
+    }
+
     public async Task<IEnumerable<Workspace>> GetAllWorkspaces()
     {
         return await _context.Workspaces.OrderByDescending(w => w.CreatedAt).ToListAsync();
@@ -25,11 +30,6 @@ public class WorkspaceRepository : IWorkspaceRepository
     public async Task<IEnumerable<Workspace>> GetUserWorkspaces(int userId)
     {
         return await _context.Workspaces.Where(w => w.UserId == userId).OrderByDescending(w => w.CreatedAt).ToListAsync();
-    }
-
-    public async Task<bool> SaveChangesAsync()
-    {
-        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> AddWorkspace(Workspace workspace)
@@ -76,7 +76,7 @@ public class WorkspaceRepository : IWorkspaceRepository
     public async Task<bool> HardDeleteWorkspace(int workspaceId)
     {
         var workspace = await _context.Workspaces.FirstOrDefaultAsync(w => w.Id == workspaceId);
-        if (workspace == null || workspace.IsDeleted == false)
+        if (workspace == null || !workspace.IsDeleted)
         {
             return false;
         }
