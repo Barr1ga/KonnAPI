@@ -1,6 +1,7 @@
 ﻿namespace KonnAPI.Models;
 
-public class Workspace {
+public class Workspace
+{
     public int Id { get; set; }
     public int UserId { get; set; }
     public string Name { get; set; }

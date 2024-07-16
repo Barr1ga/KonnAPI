@@ -49,11 +49,46 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<User> UpdateUser(int userId, User user)
+    public async Task<bool> UpdateUser(int userId, User user)
     {
         user.UpdatedAt = DateTime.Now;
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-        return user;
+        return true;
+    }
+
+    public async Task<bool> DeleteUser(int id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null)
+        {
+            return false;
+        }
+        user.IsDeleted = true;
+        user.UpdatedAt = DateTime.Now;
+        return await SaveChangesAsync();
+    }
+
+    public async Task<bool> RestoreUser(int id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null)
+        {
+            return false;
+        }
+        user.IsDeleted = false;
+        user.UpdatedAt = DateTime.Now;
+        return await SaveChangesAsync();
+    }
+
+    public async Task<bool> HardDeleteUser(int id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null || user.IsDeleted == false)
+        {
+            return false;
+        }
+        _context.Users.Remove(user);
+        return await SaveChangesAsync();
     }
 }
