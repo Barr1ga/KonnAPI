@@ -13,11 +13,15 @@ namespace KonnAPI.Controllers;
 public class ContactController : Controller
 {
     private readonly IContactRepository _contactRepository;
+    private readonly IAddressRepository _addressRepository;
+    private readonly IContactCategoryRepository _contactCategoryRepository;
     private readonly IMapper _mapper;
 
-    public ContactController(IContactRepository contactRepository, IMapper mapper)
+    public ContactController(IContactRepository contactRepository, IAddressRepository addressRepository, IContactCategoryRepository contactCategoryRepository, IMapper mapper)
     {
         _contactRepository = contactRepository;
+        _addressRepository = addressRepository;
+        _contactCategoryRepository = contactCategoryRepository;
         _mapper = mapper;
     }
 
@@ -100,9 +104,27 @@ public class ContactController : Controller
                 return StatusCode(500, new MessageDto(Status.Error, "Something went wrong while adding the contact"));
             }
 
-            // TODO: add ContactCategories to contact
-            // TODO: add Addresses to contact
-            // TODO: add Socials to contact
+            if (contact.CategoryIds != null)
+            {
+                List<ContactCategory> contactCategories = new List<ContactCategory>();
+                contact.CategoryIds.ForEach(async c =>
+                {
+                    contactCategories.Add(_mapper.Map<ContactCategory>(c));
+                });
+
+                await _contactCategoryRepository.AddContactCategories(contactCategories);
+            }
+
+            if (contact.Addresses != null)
+            {
+                List<Address> addresses = new List<Address>();
+                contact.Addresses.ForEach(async a =>
+                {
+                    addresses.Add(_mapper.Map<Address>(a));
+                });
+
+                await _addressRepository.AddAddresses(addresses);
+            }
 
             return Created(
                 "contacts",

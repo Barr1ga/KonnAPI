@@ -11,7 +11,7 @@ public class Address
     [Required]
     public int ContactId { get; set; }
 
-    public string Location { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
 
     [Required]
     public bool IsDefault { get; set; } = false;

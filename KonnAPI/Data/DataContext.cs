@@ -19,8 +19,6 @@ public class DataContext : DbContext
 
   public DbSet<ContactCategory> ContactCategories { get; set; }
 
-  public DbSet<Social> Socials { get; set; }
-
   public DbSet<Workspace> Workspaces { get; set; }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -31,12 +29,6 @@ public class DataContext : DbContext
       .HasMany(c => c.Addresses)
       .WithOne(a => a.Contact)
       .HasForeignKey(a => a.ContactId)
-      .OnDelete(DeleteBehavior.Cascade);
-
-    modelBuilder.Entity<Contact>()
-      .HasMany(c => c.Socials)
-      .WithOne(cc => cc.Contact)
-      .HasForeignKey(cc => cc.ContactId)
       .OnDelete(DeleteBehavior.Cascade);
 
     modelBuilder.Entity<Contact>()

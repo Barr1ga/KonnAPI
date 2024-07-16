@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KonnAPI.Models;
 
@@ -40,11 +39,9 @@ public class Contact
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual ICollection<Address> Addresses { get; set; }
+    public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
-    public virtual ICollection<Social> Socials { get; set; }
-
-    public virtual ICollection<ContactCategory> ContactCategories { get; set; }
+    public virtual ICollection<ContactCategory> ContactCategories { get; set; } = new List<ContactCategory>();
 
     public virtual Workspace Workspace { get; set; }
 }

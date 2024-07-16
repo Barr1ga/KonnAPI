@@ -38,6 +38,12 @@ public class AddressRepository : IAddressRepository
         return await SaveChangesAsync();
     }
 
+    public async Task<bool> AddAddresses(List<Address> addresses)
+    {
+        await _context.Addresses.AddRangeAsync(addresses);
+        return await SaveChangesAsync();
+    }
+
     public async Task<bool> UpdateAddress(int addressId, Address address)
     {
         address.UpdatedAt = DateTime.Now;

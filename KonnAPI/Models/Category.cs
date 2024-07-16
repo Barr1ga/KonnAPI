@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KonnAPI.Models;
 
@@ -13,7 +12,7 @@ public class Category
     public int WorkspaceId { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
 

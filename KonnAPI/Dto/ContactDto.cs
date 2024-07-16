@@ -32,4 +32,6 @@ public class ContactCreateDto
     public bool IsFavorite { get; set; }
     public bool IsBlocked { get; set; }
     public bool IsEmergency { get; set; }
+    public List<AddressCreateDto>? Addresses { get; set; }
+    public List<int>? CategoryIds { get; set; }
 }
